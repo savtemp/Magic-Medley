@@ -8,7 +8,7 @@
     <div class="col-12">
       <section class="row">
         <div class="col-md-12 text-center">
-          <div class="row justify-content-center mt-4">
+          <div class="row justify-content-center">
             <div class="col-md-8">
               <div>
                 <img src="../assets/img/mtg-guilds/guildofrav_mtg.webp" alt="" />

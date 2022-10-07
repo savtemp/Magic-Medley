@@ -22,10 +22,10 @@
           <div class="row mb-5">
             <div class="col-12">
               <div class="row justify-content-center">
-                <CollectionFilter />
+                <!-- <CollectionFilter /> -->
               </div>
             </div>
-            <div v-for="c in cards" :key="c.id" class="col-4 col-md-2">
+            <div v-for="c in cards" :key="c.id" class="col-4 col-md-3">
               <CollectionCard :card="c" />
             </div>
           </div>
@@ -106,8 +106,8 @@ import { useRoute, useRouter } from "vue-router";
 
 export default {
   setup() {
-const router = useRouter();
-const route = useRoute();
+    const router = useRouter();
+    const route = useRoute();
 
     function getAccountId() {
       try {
@@ -119,14 +119,14 @@ const route = useRoute();
     }
 
     async function getAccountCards() {
-        try {
-          await cardsService.getAccountCards()
-        }
-        catch (error) {
-          logger.log("[getting all cards]", error);
-          Pop.error(error);
-        }
+      try {
+        await cardsService.getAccountCards()
       }
+      catch (error) {
+        logger.log("[getting all cards]", error);
+        Pop.error(error);
+      }
+    }
 
     onMounted(() => {
       AppState.activeDeck = {}

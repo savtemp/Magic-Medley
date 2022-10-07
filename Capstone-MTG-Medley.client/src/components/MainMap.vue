@@ -44,13 +44,16 @@ export default {
         mapTypeId: google.maps.MapTypeId.ROADMAP
       })
 
-      const userInput = document.getElementById('pac-input')
+      let userInput = document.getElementById('pac-input')
+
+      // userInput = userInput + "in boise"
+
 
       const searchBox = new google.maps.places.SearchBox(userInput)
 
 
       // TODO get search box to layer on top map
-      console.log(map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(userInput))
+      console.log(map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(userInput),)
       map.controls[google.maps.ControlPosition.TOP_LEFT].push(userInput)
 
       map.addListener("bounds_changed", () => {
@@ -63,6 +66,7 @@ export default {
       searchBox.addListener("places_changed", () => {
         const places = searchBox.getPlaces()
         console.log(places);
+        AppState.locations = places
 
         if (places.length == 0) {
           return;
@@ -281,7 +285,7 @@ export default {
 
 <style scoped lang="scss">
 #map {
-  height: 100vh;
+  height: 75vh;
   width: 100%;
   border: 3px solid black;
   border-radius: 20px;
