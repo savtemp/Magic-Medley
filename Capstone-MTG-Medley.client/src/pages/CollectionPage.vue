@@ -69,7 +69,7 @@
         <img
           v-if="!activeDeck.id"
           class="img-fluid"
-          src="src/assets/img/fancy banner.png"
+          src="../assets/img/fancybanner.png"
           alt=""
         />
         <div v-if="decks.length && !activeDeck.id" class="row mx-auto">
