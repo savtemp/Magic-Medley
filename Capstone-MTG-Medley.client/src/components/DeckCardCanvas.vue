@@ -1,14 +1,18 @@
 <template>
   <!-- <button @click="removeCardFromDeck()" class="btn-outline btn xsFont">Remove from Deck</button> -->
   <div class="row my-2" :title="card.card?.name">
-    <div v-if="card" class="col-11 mx-auto deckCardCanvas d-flex align-items-end justify-content-between">
+    <div
+      v-if="card"
+      class="col-11 mx-auto deckCardCanvas d-flex align-items-end justify-content-between"
+    >
       <!-- <img class="img-fluid shadow cardsBg childElement deleteCard" :src=card.card?.image_uris?.small
         :title="card.card?.name"> -->
       <div class="col-12">
-        <div class="selectable minusButton" @click="removeCardFromDeck"><i class="mdi  mdi-minus-circle-outline"></i>
+        <div class="selectable minusButton" @click="removeCardFromDeck">
+          <i class="mdi mdi-minus-circle-outline"></i>
         </div>
         <div class="row align-items-center justify-content-between">
-          <div class="col-8 ">
+          <div class="col-8">
             <h5 class="deckText text-start mb-0">{{ card.card.name }}</h5>
           </div>
           <div class="col-1 mx-3 my-2">
@@ -18,8 +22,10 @@
       </div>
     </div>
     <div v-else>
-      <img class="img-fluid shadow cardsBg deckCardCanvas"
-        src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712">
+      <img
+        class="img-fluid shadow cardsBg deckCardCanvas"
+        src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712"
+      />
     </div>
   </div>
   <!-- NOTE CARD QUANTITY -->
@@ -59,7 +65,6 @@ import { logger } from "../utils/Logger";
 import Pop from "../utils/Pop";
 import Modal from "./Modal.vue";
 
-
 export default {
   props: { card: { type: Object, required: true } },
   setup(props) {
@@ -85,33 +90,30 @@ export default {
       deckCard: computed(() => AppState.deckCards),
       reset() {
         AppState.activeCard = props.card;
-        console.log("Active Card:", props.card);
+        logger.log("Active Card:", props.card);
       },
       async getCardByOracle() {
         try {
-
           await cardsService.getCardByOracle(props.card.oracle_id);
-        }
-        catch (error) {
-          logger.error('[Getting Card By Oracle]', error);
+        } catch (error) {
+          logger.error("[Getting Card By Oracle]", error);
           Pop.toast(error.message, "error");
         }
       },
       async removeCardFromDeck() {
         try {
-          console.log(" Id", props.card);
+          logger.log(" Id", props.card);
           // const yes = await Pop.confirm("Remove Card?");
           // if (!yes) {
           //   return;
           // }
           const cardId = props.card.id;
           await deckCardsService.removeCard(cardId);
-        }
-        catch (error) {
-          logger.error('[Removing Card From Deck:]', error);
+        } catch (error) {
+          logger.error("[Removing Card From Deck:]", error);
           Pop.toast(error.message, "error");
         }
-      }
+      },
       // mounted() {
       //   const childElements = document.querySelectorAll('.childElement');
       //   childElements.forEach(childElement => {
@@ -135,9 +137,8 @@ export default {
       // },
     };
   },
-  components: { Modal }
-}
-
+  components: { Modal },
+};
 </script>
 
 <style scoped lang="scss">
@@ -146,7 +147,7 @@ export default {
 }
 
 .quantityBorder {
-  border: solid 1px black
+  border: solid 1px black;
 }
 
 .deckCardCanvas {
@@ -173,13 +174,9 @@ export default {
   left: 70%;
   top: 5%;
   font-size: 2.5em;
-  -webkit-text-stroke: .5px black;
+  -webkit-text-stroke: 0.5px black;
   color: white;
-  text-shadow:
-    3px 3px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px 1px 0 #000, 1px 1px 0 #000;
 }
 </style>

@@ -1,27 +1,32 @@
 <template>
-
-
   <section class="container-fluid pageBg collectionPageViewHeight">
-
     <header class="row">
       <ClearNavBar />
     </header>
 
     <div v-if="activeDeck.id" class="row my-3">
       <div class="col-6 col-md-2 align-items-center">
-        <img @click="gotToProfile()" type="button" class="profile-img" :src=activeDeck.profile?.picture
-          alt="profile picture">
-        <h4 class="">{{activeDeck.profile?.name}}</h4>
+        <img
+          @click="gotToProfile()"
+          type="button"
+          class="profile-img"
+          :src="activeDeck.profile?.picture"
+          alt="profile picture"
+        />
+        <h4 class="">{{ activeDeck.profile?.name }}</h4>
       </div>
       <div class="col-12 col-md-10">
-        <h1>{{activeDeck.name}}</h1>
-        <div class="col-12 col-md-8">{{activeDeck.description}}</div>
+        <h1>{{ activeDeck.name }}</h1>
+        <div class="col-12 col-md-8">{{ activeDeck.description }}</div>
         <div class="row">
-          <h4 v-if="activeDeck?.avgRating">Deck Rating:
-            {{(activeDeck?.avgRating/activeDeck.rating?.length).toFixed(1)}}/5<span
-              class="mdi mdi-star mdi-24px"></span>
+          <h4 v-if="activeDeck?.avgRating">
+            Deck Rating:
+            {{
+              (activeDeck?.avgRating / activeDeck.rating?.length).toFixed(1)
+            }}/5<span class="mdi mdi-star mdi-24px"></span>
           </h4>
-          <h4 v-else>Deck Rating: UNRATED<span class="mdi mdi-star mdi-24px"></span>
+          <h4 v-else>
+            Deck Rating: UNRATED<span class="mdi mdi-star mdi-24px"></span>
           </h4>
         </div>
         <div class="row">
@@ -33,27 +38,48 @@
               <i v-else class="mdi mdi-star mdi-36px"></i>
             </button>
             <button @click="rateDeck(2)" class="btn m-0 p-0 text-warning">
-              <i v-if="activeRater?.value >= 2" class="mdi mdi-star mdi-36px"></i>
+              <i
+                v-if="activeRater?.value >= 2"
+                class="mdi mdi-star mdi-36px"
+              ></i>
               <i v-else class="mdi mdi-star-outline mdi-36px"></i>
             </button>
             <button @click="rateDeck(3)" class="btn m-0 p-0 text-warning">
-              <i v-if="activeRater?.value >= 3" class="mdi mdi-star mdi-36px text-warning"></i>
+              <i
+                v-if="activeRater?.value >= 3"
+                class="mdi mdi-star mdi-36px text-warning"
+              ></i>
               <i v-else class="mdi mdi-star-outline mdi-36px"></i>
             </button>
             <button @click="rateDeck(4)" class="btn m-0 p-0 text-warning">
-              <i v-if="activeRater?.value >= 4" class="mdi mdi-star mdi-36px"></i>
+              <i
+                v-if="activeRater?.value >= 4"
+                class="mdi mdi-star mdi-36px"
+              ></i>
               <i v-else class="mdi mdi-star-outline mdi-36px"></i>
             </button>
             <button @click="rateDeck(5)" class="btn m-0 p-0 text-warning">
-              <i v-if="activeRater?.value >= 5" class="mdi mdi-star mdi-36px"></i>
+              <i
+                v-if="activeRater?.value >= 5"
+                class="mdi mdi-star mdi-36px"
+              ></i>
               <i v-else class="mdi mdi-star-outline mdi-36px"></i>
             </button>
           </div>
           <div class="col-3"></div>
-          <button class="glass btn col-2 m-1" @click="cloneDeck">Copy Deck to My Collection</button>
-          <button class="glass btn btn-outline col-2 m-1" type="button" @click="FindCardsMissingFromMyCollectionInDeck"
-            data-bs-toggle="offcanvas" data-bs-target="#shopping-cart-modal" aria-controls="offcanvasExample">Compare to
-            my collection</button>
+          <button class="glass btn col-2 m-1" @click="cloneDeck">
+            Copy Deck to My Collection
+          </button>
+          <button
+            class="glass btn btn-outline col-2 m-1"
+            type="button"
+            @click="FindCardsMissingFromMyCollectionInDeck"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#shopping-cart-modal"
+            aria-controls="offcanvasExample"
+          >
+            Compare to my collection
+          </button>
         </div>
       </div>
     </div>
@@ -103,63 +129,57 @@
         </div> -->
       </div>
     </div>
-
-
   </section>
 
   <ShoppingCartModal />
 </template>
 
-
-
 <script>
-
-import { useRoute, useRouter } from 'vue-router';
-import { decksService } from '../services/DecksService.js';
-import { computed } from '@vue/reactivity';
-import { onMounted, ref } from 'vue';
-import { AppState } from '../AppState.js';
-import Pop from '../utils/Pop.js';
-import { deckCardsService } from '../services/DeckCardsService.js';
-import DeckCard from '../components/DeckCard.vue';
-import DeckDetailsCard from '../components/DeckDetailsCard.vue';
+import { useRoute, useRouter } from "vue-router";
+import { decksService } from "../services/DecksService.js";
+import { computed } from "@vue/reactivity";
+import { onMounted, ref } from "vue";
+import { AppState } from "../AppState.js";
+import Pop from "../utils/Pop.js";
+import { deckCardsService } from "../services/DeckCardsService.js";
+import DeckCard from "../components/DeckCard.vue";
+import DeckDetailsCard from "../components/DeckDetailsCard.vue";
 import { router } from "../router.js";
 import ShoppingCartModal from "../components/ShoppingCartModal.vue";
-
+import { logger } from "../utils/Logger.js";
 
 export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
-    const lands = 'Swamp' || 'Mountain'
+    const lands = "Swamp" || "Mountain";
 
     async function setActiveDeck() {
       try {
         await decksService.setActiveDeck(route.params.deckId);
         await deckCardsService.getDeckCards(route.params.deckId);
-        createListOfDeckCardsWithQuantity()
-      }
-      catch (error) {
-        console.log(error);
+        createListOfDeckCardsWithQuantity();
+      } catch (error) {
+        logger.log(error);
         Pop.error("[setting active deck]", error);
       }
     }
 
     function createListOfDeckCardsWithQuantity() {
-      let newArray = [...AppState.deckCards]
+      let newArray = [...AppState.deckCards];
       for (let i = 0; i < newArray.length; i++) {
         const firstCard = newArray[i];
-        firstCard.quantity = 1
+        firstCard.quantity = 1;
         for (let j = i + 1; j < newArray.length; j++) {
           const secondCard = newArray[j];
           if (firstCard.cardId == secondCard.cardId) {
-            firstCard.quantity++
-            newArray.splice(j, 1)
-            j--
+            firstCard.quantity++;
+            newArray.splice(j, 1);
+            j--;
           }
         }
       }
-      AppState.duplicates = newArray
+      AppState.duplicates = newArray;
     }
 
     onMounted(() => {
@@ -169,32 +189,37 @@ export default {
       lands,
       duplicates: computed(() => AppState.duplicates),
       activeDeck: computed(() => AppState.activeDeck),
-      activeRater: computed(() => AppState.activeDeck?.rating.find(r => r.creatorId == AppState.account.id)),
+      activeRater: computed(() =>
+        AppState.activeDeck?.rating.find(
+          (r) => r.creatorId == AppState.account.id
+        )
+      ),
       deckCards: computed(() => AppState.deckCards),
       cover: computed(() => `url(${AppState.activeDeck?.picture})`),
-      deckLandCards: computed(() => AppState.deckCards?.filter(land => land.card.name == lands)),
+      deckLandCards: computed(() =>
+        AppState.deckCards?.filter((land) => land.card.name == lands)
+      ),
 
       FindCardsMissingFromMyCollectionInDeck() {
-        let missingCards = this.duplicates.map(dc => {
-          let found = AppState.collection.find(c => c.name == dc.card.name)
+        let missingCards = this.duplicates.map((dc) => {
+          let found = AppState.collection.find((c) => c.name == dc.card.name);
           if (found) {
-            let missingCard = { ...found }
-            missingCard.missingQty = dc.quantity - found.quantity
+            let missingCard = { ...found };
+            missingCard.missingQty = dc.quantity - found.quantity;
             if (missingCard.missingQty > 0) {
-              return missingCard
+              return missingCard;
             }
+          } else {
+            let missingCard = { ...dc };
+            missingCard.missingQty = dc.quantity;
+            return missingCard;
           }
-          else {
-            let missingCard = { ...dc }
-            missingCard.missingQty = dc.quantity
-            return missingCard
-          }
-        })
-        AppState.missingCards = missingCards
+        });
+        AppState.missingCards = missingCards;
       },
       // the above method returns an array of undefined objects, the below method returns nothing.
       // FindCardsMissingFromMyCollectionInDeck() {
-      //   let missingCards = [] 
+      //   let missingCards = []
       //   this.duplicates.ForEach(dc => {
       //     let found = AppState.collection.find(c => c.name == dc.card.name)
       //     if (found) {
@@ -215,31 +240,33 @@ export default {
 
       async rateDeck(num) {
         try {
-          const accountId = this.activeDeck.accountId
-          const deckId = this.activeDeck.id
-          await decksService.rateDeck({ value: num }, deckId, accountId)
+          const accountId = this.activeDeck.accountId;
+          const deckId = this.activeDeck.id;
+          await decksService.rateDeck({ value: num }, deckId, accountId);
         } catch (error) {
-          Pop.error(error)
+          Pop.error(error);
         }
       },
 
       async cloneDeck() {
         try {
-          await decksService.cloneDeck(this.activeDeck.id)
+          await decksService.cloneDeck(this.activeDeck.id);
         } catch (error) {
-          Pop.error(error)
+          Pop.error(error);
         }
       },
 
       async gotToProfile() {
-        router.push({ name: 'Profile', params: { profileId: AppState.activeDeck.profile.id } })
-      }
+        router.push({
+          name: "Profile",
+          params: { profileId: AppState.activeDeck.profile.id },
+        });
+      },
     };
   },
-  components: { DeckCard, DeckDetailsCard, ShoppingCartModal }
+  components: { DeckCard, DeckDetailsCard, ShoppingCartModal },
 };
 </script>
-
 
 <style scoped lang="scss">
 .pageBg {
@@ -266,7 +293,7 @@ export default {
 }
 
 .glass {
-  background-color: rgb(0, 0, 0, .2);
+  background-color: rgb(0, 0, 0, 0.2);
 }
 
 .deckCanvas {
@@ -280,18 +307,18 @@ export default {
   backdrop-filter: blur(4px);
   border: solid 5px rgba(0, 0, 0, 0.43);
   /* color: white; */
-  height: 90VH;
+  height: 90vh;
   position: fixed;
   right: 0;
 }
 
 .myDeckSize {
-  max-height: 10VH;
-  max-width: 100VW;
+  max-height: 10vh;
+  max-width: 100vw;
 }
 
 .offCanvasBorder {
-  border: solid black 10px
+  border: solid black 10px;
 }
 
 .deckImg {
@@ -313,14 +340,10 @@ i {
 }
 
 .deckText {
-  -webkit-text-stroke: .5px black;
+  -webkit-text-stroke: 0.5px black;
   color: rgba(255, 255, 255, 0.88);
-  text-shadow:
-    3px 3px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .profile-img {
@@ -358,7 +381,6 @@ i {
 //     align-self: center;
 //     justify-self: center;
 //     // max-height: 1.25vh;
-
 
 //     :hover {
 //       max-height: 50vh;

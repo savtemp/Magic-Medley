@@ -1,5 +1,4 @@
 <template>
-
   <div class="row align-items-end">
     <button class="noBorder btn p-0" @click="setActiveDeck(deck.id)">
       <div class="col-12 rotated text-light">
@@ -11,8 +10,12 @@
       </button> -->
         </div>
         <!-- NOTE INPUT BUTTON FOR DELETING DECK -->
-        <img v-if="!deck.picture" :title="deck.name" class="img-fluid shadow cardsBg"
-          src='https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712'>
+        <img
+          v-if="!deck.picture"
+          :title="deck.name"
+          class="img-fluid shadow cardsBg"
+          src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712"
+        />
       </div>
     </button>
     <!-- <div class="col-12">
@@ -21,13 +24,10 @@
       </button>
     </div> -->
   </div>
-
-
-
 </template>
 <script>
-import { computed } from '@vue/reactivity';
-import { AppState } from '../AppState.js';
+import { computed } from "@vue/reactivity";
+import { AppState } from "../AppState.js";
 import { deckCardsService } from "../services/DeckCardsService.js";
 import { decksService } from "../services/DecksService.js";
 import { logger } from "../utils/Logger.js";
@@ -35,7 +35,7 @@ import Pop from "../utils/Pop.js";
 
 export default {
   props: {
-    deck: { type: Object, required: true }
+    deck: { type: Object, required: true },
   },
 
   setup(props) {
@@ -47,10 +47,10 @@ export default {
 
       async setActiveDeck(deckId) {
         try {
-          await decksService.setActiveDeck(deckId)
-          await deckCardsService.getDeckCards(deckId)
+          await decksService.setActiveDeck(deckId);
+          await deckCardsService.getDeckCards(deckId);
         } catch (error) {
-          logger.error('[setting active deck]', error);
+          logger.error("[setting active deck]", error);
           Pop.error(error);
         }
       },
@@ -60,17 +60,17 @@ export default {
           if (!yes) {
             return;
           }
-          const deckId = props.deck.id
-          console.log('Deck Id:', deckId)
-          await decksService.deleteDeck(deckId)
+          const deckId = props.deck.id;
+          logger.log("Deck Id:", deckId);
+          await decksService.deleteDeck(deckId);
         } catch (error) {
-          logger.error('[Deleting Deck]', error)
-          Pop.toast(error.message, 'error')
+          logger.error("[Deleting Deck]", error);
+          Pop.toast(error.message, "error");
         }
       },
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style>
@@ -130,13 +130,9 @@ export default {
 }
 
 .deckText {
-  -webkit-text-stroke: .5px black;
+  -webkit-text-stroke: 0.5px black;
   color: white;
-  text-shadow:
-    3px 3px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
+    -1px 1px 0 #000, 1px 1px 0 #000;
 }
 </style>

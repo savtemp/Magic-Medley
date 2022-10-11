@@ -2,20 +2,26 @@
   <div class="row justify-content-center hero-img">
     <div class="col-12 text-center">
       <div class="row d-flex justify-content-evenly">
-        <div @click="searchPage()"
-          class="col-3 bg-left text-light rounded d-flex align-items-center justify-content-center">
+        <div
+          @click="searchPage()"
+          class="col-3 bg-left text-light rounded d-flex align-items-center justify-content-center"
+        >
           <div class="fs-4 selectable effect2">
             <h1 class="effect">Search for Cards</h1>
           </div>
         </div>
-        <div @click="guildPage()"
-          class="col-3 bg-center rounded text-light d-flex align-items-center justify-content-center">
+        <div
+          @click="guildPage()"
+          class="col-3 bg-center rounded text-light d-flex align-items-center justify-content-center"
+        >
           <div class="fs-4 selectable effect2">
             <h1 class="effect">Guild</h1>
           </div>
         </div>
-        <div @click="collectionPage()"
-          class="col-3 bg-right rounded text-light d-flex align-items-center justify-content-center">
+        <div
+          @click="collectionPage()"
+          class="col-3 bg-right rounded text-light d-flex align-items-center justify-content-center"
+        >
           <div class="fs-4 selectable effect2">
             <router-link :to="{ name: 'Collection' }" class="text-my-light">
               <h1 class="effect">My Collection</h1>
@@ -27,7 +33,7 @@
   </div>
 
   <div class="row footerHeight">
-    <div class="col-12 ">
+    <div class="col-12">
       <FooterNav />
     </div>
   </div>
@@ -40,6 +46,7 @@ import { onMounted } from "vue";
 import SearchedCards from "../components/SearchedCards.vue";
 import FooterNav from "../components/FooterNav.vue";
 import { useRoute, useRouter } from "vue-router";
+import { logger } from "../utils/Logger.js";
 
 export default {
   setup() {
@@ -63,30 +70,27 @@ export default {
 
       async searchPage() {
         try {
-          router.push({ name: "Search", params: {} })
+          router.push({ name: "Search", params: {} });
         } catch (error) {
-          console.log(error)
+          logger.log(error);
         }
       },
 
       async guildPage() {
         try {
-          router.push({ name: "Guild", params: {} })
+          router.push({ name: "Guild", params: {} });
         } catch (error) {
-          console.log(error)
+          logger.log(error);
         }
       },
 
       async collectionPage() {
         try {
-          router.push({ name: "Collection", params: {} })
+          router.push({ name: "Collection", params: {} });
         } catch (error) {
-          console.log(error)
+          logger.log(error);
         }
-      }
-
-
-
+      },
     };
   },
   components: { SearchedCards, FooterNav },
@@ -146,7 +150,7 @@ img {
   background-size: cover;
   height: 93vh;
   transition: 2 ease;
-  transform: scale(.75);
+  transform: scale(0.75);
   transition: all 300ms ease-in-out;
 }
 
@@ -157,10 +161,9 @@ img {
   transform: translate(0, -1px);
   cursor: pointer;
   filter: brightness(90%);
-  transform: scale(.95);
+  transform: scale(0.95);
   transition: all 300ms ease-in-out;
 }
-
 
 .bg-center {
   background-image: url(https://wallpaperaccess.com/full/251814.jpg);
@@ -168,7 +171,7 @@ img {
   background-size: cover;
   height: 93vh;
   transition: 2 ease;
-  transform: scale(.75);
+  transform: scale(0.75);
   transition: all 300ms ease-in-out;
 }
 
@@ -179,7 +182,7 @@ img {
   transform: translate(0, -1px);
   cursor: pointer;
   filter: brightness(90%);
-  transform: scale(.95);
+  transform: scale(0.95);
   transition: all 300ms ease-in-out;
 }
 
@@ -189,7 +192,7 @@ img {
   background-size: cover;
   height: 93vh;
   transition: 2 ease;
-  transform: scale(.75);
+  transform: scale(0.75);
   transition: all 300ms ease-in-out;
 }
 
@@ -200,10 +203,9 @@ img {
   transform: translate(0, -1px);
   cursor: pointer;
   filter: brightness(90%);
-  transform: scale(.95);
+  transform: scale(0.95);
   transition: all 300ms ease-in-out;
 }
-
 
 // EFFECT AND EFFECT2 ARE FOR THE STYLING ON THE HOVER EFFECT TEXT
 .effect {
@@ -220,8 +222,8 @@ img {
 
 .effect2 {
   opacity: 0;
-  transition: .5s ease;
-  background-color: #008CBA;
+  transition: 0.5s ease;
+  background-color: #008cba;
 }
 
 .bg-left:hover .effect2 {

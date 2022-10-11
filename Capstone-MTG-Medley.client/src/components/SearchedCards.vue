@@ -1,10 +1,19 @@
 <template>
-  <div @click="getCardByOracle() && reset(card)" type="button" data-bs-toggle="modal"
-    :data-bs-target="'#cardModal' + card.id" class="shadow rotated">
+  <div
+    @click="getCardByOracle() && reset(card)"
+    type="button"
+    data-bs-toggle="modal"
+    :data-bs-target="'#cardModal' + card.id"
+    class="shadow rotated"
+  >
     <div class="card-bg">
       <div class="magic-card" :class="{ loaded: imgLoaded }">
-        <img @load="imgLoaded = true" class="img-fluid fix-edge shadow" :src="card.image_uris.normal"
-          :title="card.name" />
+        <img
+          @load="imgLoaded = true"
+          class="img-fluid fix-edge shadow"
+          :src="card.image_uris.normal"
+          :title="card.name"
+        />
       </div>
       <!-- <div v-else class="">
         <img
@@ -37,11 +46,11 @@ export default {
       activeCard: computed(() => AppState.activeCard),
       reset() {
         AppState.activeCard = props.card;
-        console.log("Active Card:", props.card);
+        logger.log("Active Card:", props.card);
       },
       async getCardByOracle() {
         try {
-          // console.log(" Id", props.card.oracleId);
+          // logger.log(" Id", props.card.oracleId);
           await cardsService.getCardByOracle(props.card.oracle_id);
         } catch (error) {
           logger.error(error);
@@ -56,7 +65,6 @@ export default {
 <style scoped lang="scss">
 .magic-card {
   opacity: 0;
-
 
   // transition: opacity 0.2s 0.1s linear;
   &.loaded {

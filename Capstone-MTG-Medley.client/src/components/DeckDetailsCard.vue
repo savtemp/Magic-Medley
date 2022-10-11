@@ -1,12 +1,17 @@
 <template>
   <div class="">
     <div v-if="card" class="">
-      <img class="img-fluid shadow cardsBg childElement deleteCard deck-details-card rounded"
-        :src=card.card?.image_uris?.normal :title="card.card?.name">
+      <img
+        class="img-fluid shadow cardsBg childElement deleteCard deck-details-card rounded"
+        :src="card.card?.image_uris?.normal"
+        :title="card.card?.name"
+      />
     </div>
     <div v-else>
-      <img class="img-fluid shadow cardsBg rounded"
-        src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712">
+      <img
+        class="img-fluid shadow cardsBg rounded"
+        src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712"
+      />
     </div>
   </div>
   <!-- NOTE CARD QUANTITY -->
@@ -46,7 +51,6 @@ import { logger } from "../utils/Logger";
 import Pop from "../utils/Pop";
 import Modal from "./Modal.vue";
 
-
 export default {
   props: { card: { type: Object, required: true } },
   setup(props) {
@@ -62,14 +66,13 @@ export default {
 
       reset() {
         AppState.activeCard = props.card;
-        console.log("Active Card:", props.card);
+        logger.log("Active Card:", props.card);
       },
       async getCardByOracle() {
         try {
-          // console.log(" Id", props.card.oracleId);
+          // logger.log(" Id", props.card.oracleId);
           await cardsService.getCardByOracle(props.card.oracle_id);
-        }
-        catch (error) {
+        } catch (error) {
           logger.error(error);
           Pop.toast(error.message, "error");
         }
@@ -82,17 +85,15 @@ export default {
           }
           const cardId = props.card.id;
           await deckCardsService.removeCard(cardId);
-        }
-        catch (error) {
+        } catch (error) {
           logger.error(error);
           Pop.toast(error.message, "error");
         }
-      }
+      },
     };
   },
-  components: { Modal }
-}
-
+  components: { Modal },
+};
 </script>
 
 <style>
@@ -105,6 +106,6 @@ export default {
 }
 
 .quantityBorder {
-  border: solid 1px black
+  border: solid 1px black;
 }
 </style>

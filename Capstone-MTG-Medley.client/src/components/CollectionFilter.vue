@@ -1,46 +1,70 @@
 <template>
-
-
   <!-- SECTION Color Wheel -->
   <section class="col-3 d-flex justify-content-center">
     <div class="hero-img">
-      <img @click="filterCards = 'W' && sortColor()" class="mana white" src="../assets/img/mana-white.png" alt="">
-      <img @click="filterCards = 'U' && sortColor()" class="mana blue" src="../assets/img/mana-blue.png" alt="">
-      <img @click="filterCards = 'B'" class="mana black" src="../assets/img/mana-black.png" alt="">
-      <img @click="filterCards = 'R'" class="mana red" src="../assets/img/mana-red.png" alt="">
-      <img @click="filterCards = 'G'" class="mana green" src="../assets/img/mana-green.png" alt="">
+      <img
+        @click="filterCards = 'W' && sortColor()"
+        class="mana white"
+        src="../assets/img/mana-white.png"
+        alt=""
+      />
+      <img
+        @click="filterCards = 'U' && sortColor()"
+        class="mana blue"
+        src="../assets/img/mana-blue.png"
+        alt=""
+      />
+      <img
+        @click="filterCards = 'B'"
+        class="mana black"
+        src="../assets/img/mana-black.png"
+        alt=""
+      />
+      <img
+        @click="filterCards = 'R'"
+        class="mana red"
+        src="../assets/img/mana-red.png"
+        alt=""
+      />
+      <img
+        @click="filterCards = 'G'"
+        class="mana green"
+        src="../assets/img/mana-green.png"
+        alt=""
+      />
     </div>
   </section>
 </template>
 
-
 <script>
 // import { ref } from 'vue';
-import { computed, ref } from '@vue/reactivity';
-import { AppState } from '../AppState.js';
-import { logger } from '../utils/Logger.js';
+import { computed, ref } from "@vue/reactivity";
+import { AppState } from "../AppState.js";
+import { logger } from "../utils/Logger.js";
 
 export default {
   setup() {
-    const filterCards = ref('')
-    let color = ''
+    const filterCards = ref("");
+    let color = "";
 
     return {
       color,
       filterCards,
-      cards: computed(() => AppState.collection.filter(c => filterCards.value ? c.colors == filterCards.value : true)),
+      cards: computed(() =>
+        AppState.collection.filter((c) =>
+          filterCards.value ? c.colors == filterCards.value : true
+        )
+      ),
 
       sortColor() {
-        console.log(AppState.collection.filter(c => c.colors == filterCards.value))
-
-
-      }
-
-    }
-  }
-}
+        logger.log(
+          AppState.collection.filter((c) => c.colors == filterCards.value)
+        );
+      },
+    };
+  },
+};
 </script>
-
 
 <style lang="scss" scoped>
 .hero-img {

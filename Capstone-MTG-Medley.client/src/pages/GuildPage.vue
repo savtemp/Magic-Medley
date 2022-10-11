@@ -383,7 +383,7 @@ export default {
 
     //   // socket.on('count', function (data) {
     //   //   document.getElementById('user-count').innerHTML = data
-    //   //   console.log(data);
+    //   //   logger.log(data);
     //   // })
 
     //   // socket.on('message', function (data) {
@@ -447,7 +447,7 @@ export default {
       //     user: user || 'Anonymous',
       //     message: message
       //   });
-      //   console.log(message);
+      //   logger.log(message);
       //   message = ref('')
       // }
 

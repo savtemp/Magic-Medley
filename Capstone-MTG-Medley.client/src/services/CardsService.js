@@ -14,7 +14,7 @@ class CardsService {
     let powerTerm = null;
     let toughnessTerm = null;
     try {
-      // console.log('this is the modified search term', searchTerm)
+      // logger.log('this is the modified search term', searchTerm)
       if (AppState.searchByName) {
         searchTerm = searchTerm;
       }
@@ -77,9 +77,9 @@ class CardsService {
       if (filterTerm.toughness) {
         searchTerm += toughnessTerm + filterTerm.toughness;
       }
-      console.log("AAS searchTerm", searchTerm, "filterTerm", filterTerm);
+      logger.log("AAS searchTerm", searchTerm, "filterTerm", filterTerm);
 
-      console.log("AAS searchTerm", searchTerm, "filterTerm", filterTerm);
+      logger.log("AAS searchTerm", searchTerm, "filterTerm", filterTerm);
 
       AppState.searchedCards = [];
       const res = await search.get(baseSearch + searchTerm);
@@ -113,17 +113,17 @@ class CardsService {
 
   async cardsById(oracleCardId) {
     const res = await mtg.get("cards/" + oracleCardId);
-    console.log("Oracle Card Id", res.data);
+    logger.log("Oracle Card Id", res.data);
     AppState.activeCard = res.data;
   }
 
   async getCardByOracle(oracleId) {
-    // console.log('Oracle ID:', oracleId)
+    // logger.log('Oracle ID:', oracleId)
     const res = await mtg.get(
       "cards/search?q=oracleid%3A" + oracleId + "&unique=prints"
     );
     AppState.oracleCard = res.data.data.map((c) => new Card(c));
-    console.log("Getting card by oracle", AppState.oracleCard);
+    logger.log("Getting card by oracle", AppState.oracleCard);
   }
 
   async changePage(url) {
@@ -133,7 +133,7 @@ class CardsService {
       ...res.data.data.map((c) => new Card(c)),
     ];
     AppState.nextPage = res.data.next_page;
-    console.log("next page", AppState.nextPage);
+    logger.log("next page", AppState.nextPage);
     AppState.previousPage = res.data.previous_page;
   }
 
@@ -144,9 +144,9 @@ class CardsService {
     return res.data;
   }
 
-  async getCardOracleIdByCardId(cardId){
-    const res = await api.get('/account/cards/' + cardId)
-    return res.data
+  async getCardOracleIdByCardId(cardId) {
+    const res = await api.get("/account/cards/" + cardId);
+    return res.data;
   }
   async removeCard(cardId, cardName) {
     Pop.confirm(
@@ -157,7 +157,11 @@ class CardsService {
       case "none":
         break;
       case "confirm-delete":
-        if (await Pop.confirm("Deleting this card will remove it from any decks you own.")) {
+        if (
+          await Pop.confirm(
+            "Deleting this card will remove it from any decks you own."
+          )
+        ) {
           const res = await api.delete(
             "account/cards/" + cardId + "/deleteall"
           );
@@ -173,15 +177,17 @@ class CardsService {
 
   async cloneCards() {
     AppState.duplicates.forEach(async (d) => {
-      if (AppState.collection.find(c => c.name == d.card.name)) { return }
-      const clonedCard = await this.getCardOracleIdByCardId(d.cardId)
-      clonedCard.id = null
-      clonedCard._id = null
-      clonedCard.accountId = AppState.account.id
-      this.createCard(clonedCard)
-    })
-    await cardsService.getAccountCards()
-    await decksService.getAccountDecks(AppState.account.id)
+      if (AppState.collection.find((c) => c.name == d.card.name)) {
+        return;
+      }
+      const clonedCard = await this.getCardOracleIdByCardId(d.cardId);
+      clonedCard.id = null;
+      clonedCard._id = null;
+      clonedCard.accountId = AppState.account.id;
+      this.createCard(clonedCard);
+    });
+    await cardsService.getAccountCards();
+    await decksService.getAccountDecks(AppState.account.id);
   }
 }
 

@@ -1,27 +1,26 @@
 <template>
+  <input
+    class="controls"
+    id="pac-input"
+    type="text"
+    placeholder="Search Magic: The Gathering Events"
+    v-model="editable"
+  />
 
-  <input class="controls" id="pac-input" type="text" placeholder="Search Magic: The Gathering Events"
-    v-model="editable">
-
-  <section id="map">
-
-  </section>
+  <section id="map"></section>
 </template>
 
-
-
 <script>
-import { logger } from '../utils/Logger';
-import Pop from '../utils/Pop';
-import { mapsService } from '../services/MapsService';
-import { computed } from '@vue/reactivity';
-import { onMounted, ref } from 'vue';
-import { AppState } from '../AppState';
+import { logger } from "../utils/Logger";
+import Pop from "../utils/Pop";
+import { mapsService } from "../services/MapsService";
+import { computed } from "@vue/reactivity";
+import { onMounted, ref } from "vue";
+import { AppState } from "../AppState";
 
 export default {
   setup() {
-    const editable = ref('')
-
+    const editable = ref("");
 
     // function initMap() {
     //   let map = new google.maps.Map(document.getElementById("map"), {
@@ -36,37 +35,37 @@ export default {
     // }
 
     function initAutocomplete() {
-      // console.log(userAddress);
+      // logger.log(userAddress);
 
       const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 43.6067, lng: -116.2867 },
         zoom: 13,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      })
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      });
 
-      let userInput = document.getElementById('pac-input')
+      let userInput = document.getElementById("pac-input");
 
       // userInput = userInput + "in boise"
 
-
-      const searchBox = new google.maps.places.SearchBox(userInput)
-
+      const searchBox = new google.maps.places.SearchBox(userInput);
 
       // TODO get search box to layer on top map
-      console.log(map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(userInput),)
-      map.controls[google.maps.ControlPosition.TOP_LEFT].push(userInput)
+      logger.log(
+        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(userInput)
+      );
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(userInput);
 
       map.addListener("bounds_changed", () => {
-        searchBox.setBounds(new google.maps.LatLngBounds)
-      })
+        searchBox.setBounds(new google.maps.LatLngBounds());
+      });
 
-      let markers = new google.maps.Marker()
-      markers = []
+      let markers = new google.maps.Marker();
+      markers = [];
 
       searchBox.addListener("places_changed", () => {
-        const places = searchBox.getPlaces()
-        console.log(places);
-        AppState.locations = places
+        const places = searchBox.getPlaces();
+        logger.log(places);
+        AppState.locations = places;
 
         if (places.length == 0) {
           return;
@@ -74,18 +73,19 @@ export default {
 
         markers.forEach((marker) => {
           marker.setMap(null);
-        })
+        });
 
-        markers = []
+        markers = [];
 
-        const bounds = new google.maps.LatLngBounds()
+        const bounds = new google.maps.LatLngBounds();
 
         places.forEach((place) => {
           if (!place.geometry || !place.geometry.location) {
-            console.log("Returned place contains no geometry");
+            logger.log("Returned place contains no geometry");
             return;
           }
-          const image = "https://b.thumbs.redditmedia.com/1UCbc0UOhTcu8Yo_xAQUW7tp7CpAiWDVNJGEXLWXvYU.png"
+          const image =
+            "https://b.thumbs.redditmedia.com/1UCbc0UOhTcu8Yo_xAQUW7tp7CpAiWDVNJGEXLWXvYU.png";
           const icon = {
             url: image,
             size: new google.maps.Size(50, 50),
@@ -108,9 +108,9 @@ export default {
               position: place.geometry.location,
               zoom: 16,
               animation: google.maps.Animation.DROP,
-              clickable: true
+              clickable: true,
             })
-          )
+          );
 
           if (place.geometry.viewport) {
             bounds.union(place.geometry.viewport);
@@ -121,47 +121,46 @@ export default {
           for (let i = 0; i < markers.length; i++) {
             const marker = markers[i];
             marker.addListener("click", () => {
-              map.setZoom(15)
+              map.setZoom(15);
               map.setCenter(marker.position);
               infoWindow.open({
                 anchor: marker,
                 map,
                 shouldFocus: false,
-                infoWindow
-              })
-              console.log(marker);
-            })
+                infoWindow,
+              });
+              logger.log(marker);
+            });
           }
-          const contentString =
-            `<div id="class">
+          const contentString = `<div id="class">
               <h3>${place.name}</h3>
               <h5>${place.formatted_address}</h5>
               <h6>Rating: ${place.rating}</h6>
               <h6>Total Rates: ${place.user_ratings_total}</h6>
-            </div>`
+            </div>`;
           const infoWindow = new google.maps.InfoWindow({
             content: contentString,
-            maxWidth: 200
-          })
+            maxWidth: 200,
+          });
 
           // for (const marker of markers) {
           //   marker.addListener("click", () => {
           //     map.setZoom(15)
           //     map.setCenter(place.geometry.location);
-          //     console.log('getting here');
+          //     logger.log('getting here');
           //   })
           // }
-        })
+        });
 
-        map.fitBounds(bounds)
+        map.fitBounds(bounds);
 
         // NOTE this method needs to be fixed - showing undefined showUserLocationOnTheMap
         // userAddedLocation(place.geometry.location.lat(), place.geometry.location.lng())
-        // console.log(places.geometry.location.lat());
+        // logger.log(places.geometry.location.lat());
         // userAddedLocation(place.geometry.location.lat(), place.geometry.location.lng())
         // let searchLocation = textSearch(place.geometry.location.lat(), place.geometry.location.lng())
         // searchLocation
-      })
+      });
     }
 
     // function userAddedLocation(latitude, longitude) {
@@ -179,7 +178,7 @@ export default {
     //   //   location: new google.maps.LatLng(43.6150, -116.2023),
     //   //   query: editable.value,
     //   // }
-    //   // console.log(request);
+    //   // logger.log(request);
     //   // let service = new google.maps.places.PlacesService(map)
     //   // service.textSearch(request, callback)
     // }
@@ -204,7 +203,7 @@ export default {
     //   if (status == google.maps.places.PlacesServiceStatus.OK) {
     //     for (let i = 0; i < results.length; i++) {
     //       let place = results[i];
-    //       console.log(place)
+    //       logger.log(place)
     //       let marker = new google.maps.Marker({
     //         position: place.geometry.location,
     //         map: map
@@ -226,13 +225,12 @@ export default {
     //   })
 
     //   // marker.setMap(map)
-    //   console.log(marker);
+    //   logger.log(marker);
     // }
 
-
     onMounted(() => {
-      initAutocomplete()
-    })
+      initAutocomplete();
+    });
 
     return {
       editable,
@@ -241,7 +239,7 @@ export default {
       //     navigator.geolocation.getCurrentPosition(position => {
       //       this.getAddress(position.coords.latitude, position.coords.longitude)
       //       this.showUserLocationOnTheMap(position.coords.latitude, position.coords.longitude)
-      //       console.log(position.coords.latitude, position.coords.longitude);
+      //       logger.log(position.coords.latitude, position.coords.longitude);
       //       // this.textSearch(position.coords.latitude, position.coords.longitude)
       //     }, error => {
       //       logger.log(error)
@@ -262,26 +260,23 @@ export default {
       // },
 
       // showUserLocationOnTheMap(latitude, longitude) {
-      //   console.log(latitude, longitude);
+      //   logger.log(latitude, longitude);
       //   let map = new google.maps.Map(document.getElementById('map'), {
       //     zoom: 15,
       //     center: new google.maps.LatLng(latitude, longitude),
       //     mapTypeId: google.maps.MapTypeId.HYBRID
       //   })
-      //   console.log(map);
-      //   console.log(map.center.lng);
+      //   logger.log(map);
+      //   logger.log(map.center.lng);
       //   new google.maps.Marker({
       //     position: new google.maps.LatLng(latitude, longitude),
       //     map: map
       //   })
       // },
-
     };
   },
 };
 </script>
-
-
 
 <style scoped lang="scss">
 #map {

@@ -3,13 +3,16 @@
     <Navbar />
   </header>
 
-
-
   <!-- SECTION Profile Details -->
-  <div class="row cover-img ">
+  <div class="row cover-img">
     <div class="col-4 profile-details anchor-point">
-      <div v-if="profile.id == account.id" title="Edit Account" class="edit-btn">
-        <router-link class="bg-warning rounded-circle " :to="{ name: 'Account' }"><i class="mdi mdi-pen p-1"></i>
+      <div
+        v-if="profile.id == account.id"
+        title="Edit Account"
+        class="edit-btn"
+      >
+        <router-link class="bg-warning rounded-circle" :to="{ name: 'Account' }"
+          ><i class="mdi mdi-pen p-1"></i>
         </router-link>
       </div>
       <img class="img-fluid profile-img" :src="profile.picture" alt="" />
@@ -18,7 +21,7 @@
         <p>{{ profile.email }}</p>
         <!-- NOTE we have no bio to add -->
         <!-- <p>{{ profile.bio }}</p> -->
-        <p>{{profile.bio}}</p>
+        <p>{{ profile.bio }}</p>
       </div>
     </div>
 
@@ -31,28 +34,42 @@
         </div>
         <div class="col-10 deck-container-bg rounded">
           <div class="row deck-cards-container">
-            <div v-for="d in decks" :key="d.id" class="card hero-img col-3 px-4 mx-2">
-              <div class=" px-3 pt-3 ">
-                <img v-if="d" :src='d?.picture' class="card-img-top img-max">
-                <img v-else
+            <div
+              v-for="d in decks"
+              :key="d.id"
+              class="card hero-img col-3 px-4 mx-2"
+            >
+              <div class="px-3 pt-3">
+                <img v-if="d" :src="d?.picture" class="card-img-top img-max" />
+                <img
+                  v-else
                   src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712"
-                  class="img-fluid" alt="...">
+                  class="img-fluid"
+                  alt="..."
+                />
               </div>
-              <h5 class="card-title text-center text-dark"><b>{{d?.name}}</b></h5>
+              <h5 class="card-title text-center text-dark">
+                <b>{{ d?.name }}</b>
+              </h5>
               <div v-if="!d?.picture" class="card-img-top">
                 <img
                   src="https://c1.scryfall.com/file/scryfall-card-backs/large/59/597b79b3-7d77-4261-871a-60dd17403388.jpg?1561757712"
-                  class="" alt="...">
+                  class=""
+                  alt="..."
+                />
               </div>
               <div class="card-body text-dark fs-5">
                 <span class="d-flex justify-content-between">
                   <p class="text-center" v-if="d.avgRating">
-                    Rating:<br>{{(d?.avgRating/d.rating?.length).toFixed(1)}}/5
+                    Rating:<br />{{
+                      (d?.avgRating / d.rating?.length).toFixed(1)
+                    }}/5
                   </p>
-                  <p class="text-center" v-else>
-                    Rating:<br>Not Rated
-                  </p>
-                  <button @click="deckDetails(d.id)" class="btn btn-outline-dark">
+                  <p class="text-center" v-else>Rating:<br />Not Rated</p>
+                  <button
+                    @click="deckDetails(d.id)"
+                    class="btn btn-outline-dark"
+                  >
                     Deck Details
                   </button>
                 </span>
@@ -65,10 +82,7 @@
         </div>
       </div>
     </div>
-
-
   </div>
-
 </template>
 
 <script>
@@ -82,6 +96,7 @@ import { profilesService } from "../services/ProfilesService";
 import Pop from "../utils/Pop";
 import Navbar from "../components/Navbar.vue";
 import { guildsService } from "../services/GuildsService.js";
+import { logger } from "../utils/Logger.js";
 
 export default {
   setup() {
@@ -93,8 +108,7 @@ export default {
     async function getProfileById() {
       try {
         await profilesService.getProfileById(route.params.profileId);
-      }
-      catch (error) {
+      } catch (error) {
         Pop.error("[Getting profile by Id]", error);
         router.push({ name: "Home" });
       }
@@ -102,36 +116,37 @@ export default {
     async function getProfileDecks() {
       try {
         await decksService.getProfileDecks(route.params.profileId);
-        console.log(route.params.profileId);
-      }
-      catch (error) {
+        logger.log(route.params.profileId);
+      } catch (error) {
         Pop.error("[getting profile decks]", error);
       }
     }
 
     async function getGuildProfile() {
       try {
-        await guildsService.getGuildProfile(route.params.profileId)
+        await guildsService.getGuildProfile(route.params.profileId);
       } catch (error) {
-        Pop.error(error)
+        Pop.error(error);
       }
     }
-
-
-
 
     onMounted(() => {
       getProfileById();
       getProfileDecks();
-      getGuildProfile()
+      getGuildProfile();
     });
     return {
       route,
       account: computed(() => AppState.account),
       profile: computed(() => AppState.activeProfile),
       decks: computed(() => AppState.profileDecks),
-      cover: computed(() => `url(${AppState.activeProfile?.coverImg ||
-        "https://cdn.pixabay.com/photo/2017/07/16/17/33/background-2509983_1280.jpg"})`),
+      cover: computed(
+        () =>
+          `url(${
+            AppState.activeProfile?.coverImg ||
+            "https://cdn.pixabay.com/photo/2017/07/16/17/33/background-2509983_1280.jpg"
+          })`
+      ),
 
       scrollLeft() {
         let content = document.querySelector(".deck-cards-container");
@@ -157,17 +172,18 @@ export default {
       async deckDetails(deckId) {
         try {
           await decksService.setActiveDeck(deckId);
-          router.push({ name: "DeckDetails", params: { deckId: AppState.activeDeck?.id } });
+          router.push({
+            name: "DeckDetails",
+            params: { deckId: AppState.activeDeck?.id },
+          });
           // Modal.getOrCreateInstance(document.getElementById('deck-modal')).hide()
-        }
-        catch (error) {
-          console.log(error);
+        } catch (error) {
+          logger.log(error);
         }
       },
-
     };
   },
-  components: { Navbar }
+  components: { Navbar },
 };
 </script>
 
@@ -249,13 +265,11 @@ export default {
   max-width: 100vw;
   overflow-x: scroll;
 
-  >div {
+  > div {
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
 }
-
-
 
 .edit-btn {
   position: relative;
